@@ -5,8 +5,8 @@ export const Container = styled.div`
   flex-direction: column;
 
   width: 100%;
-  margin-left: 10px;
-  margin-right: 10px;
+
+  padding: 10px;
 
   select {
     padding: 6px;
@@ -16,6 +16,6 @@ export const Container = styled.div`
   }
 
   label {
-    margin-top: 10px;
+    display: flex;
   }
 `;
