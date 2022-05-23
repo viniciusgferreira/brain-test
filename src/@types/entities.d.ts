@@ -1,4 +1,4 @@
-type StateProps = {
+type StateIBGEProps = {
   id: number;
   sigla: string;
   nome: string;
@@ -9,7 +9,7 @@ type StateProps = {
   };
 };
 
-type RegisterForm = {
+type FarmFormTypes = {
   id?: string;
   document: string;
   productor_name: string;

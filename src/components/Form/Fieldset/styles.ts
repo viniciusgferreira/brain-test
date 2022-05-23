@@ -16,7 +16,7 @@ export const FieldsetContainer = styled.fieldset`
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 
   legend {
-    padding: 8px;
+    padding: 0 8px;
     font-weight: bold;
     font-size: 22px;
     color: ${({ theme }) => theme.colors.primary};

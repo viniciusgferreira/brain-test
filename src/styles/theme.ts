@@ -8,6 +8,7 @@ export default {
 
     success: '#219653',
     danger: '#EB5757',
+    new: '#376fff',
 
     header: '#E0E0E0',
     text: '#363F5F',

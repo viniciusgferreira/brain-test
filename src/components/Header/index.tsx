@@ -16,7 +16,7 @@ export default function Header() {
 
         <nav>
           <NavLink as={Link} to="/" active={pathname === '/'}>
-            Cadastro
+            Fazendas
           </NavLink>
           <NavLink as={Link} to="/dashboard" active={pathname === '/dashboard'}>
             Dashboard

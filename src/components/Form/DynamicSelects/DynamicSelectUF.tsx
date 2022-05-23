@@ -1,5 +1,4 @@
-import { useCallback, useState, useEffect, ChangeEventHandler } from 'react';
-import { Oval } from 'react-loader-spinner';
+import { useCallback, useState, useEffect } from 'react';
 import SelectInput from '../Select';
 
 interface IDynamicSelectCityByUfProps {
@@ -14,7 +13,7 @@ interface IDynamicSelectCityByUfProps {
   setLoadingCityOptions: (values: boolean) => void;
 }
 
-interface ICityByUf {
+interface ICityByIBGE {
   id: number;
   nome: string;
   microrregiao: {
@@ -44,7 +43,7 @@ export function DynamicSelectCityByUf({
   loading,
   setLoadingCityOptions,
 }: IDynamicSelectCityByUfProps) {
-  const [cityOptions, setCityOptions] = useState<ICityByUf[]>([]);
+  const [cityOptions, setCityOptions] = useState<ICityByIBGE[]>([]);
 
   const getCitiesByUf = useCallback(async () => {
     try {
@@ -58,7 +57,7 @@ export function DynamicSelectCityByUf({
         .then(response => {
           return response.json();
         })
-        .then((data: ICityByUf[]) => {
+        .then((data: ICityByIBGE[]) => {
           const ordenationCities = data.sort((a, b) => {
             return a.nome.localeCompare(b.nome);
           });
