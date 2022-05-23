@@ -5,16 +5,22 @@ import Fieldset from '../../../../components/Form/Fieldset';
 import { Input } from '../../../../components/Form/Input';
 import SelectInput from '../../../../components/Form/Select';
 import WrapperInput from '../../../../components/Form/WrapperInput';
-import { ButtonContainer } from './styles';
+import { ButtonContainer, CloseButton, SubmitButton } from './styles';
 
-export default function FormRegister() {
-  const [stateOptions, setStateOptions] = useState<StateProps[]>([]);
+interface FormFarmProps {
+  setModalOpened: (value: boolean) => void;
+  formValues: FarmFormTypes;
+  setFormValues: (values: FarmFormTypes) => void;
+}
+
+export default function FormRegister({
+  setModalOpened,
+  formValues,
+  setFormValues,
+}: FormFarmProps) {
+  const [stateOptions, setStateOptions] = useState<StateIBGEProps[]>([]);
   const [loadingStateOptions, setLoadingStateOptions] = useState(false);
   const [loadingCitiesOptions, setLoadingCityOptions] = useState(false);
-
-  const [formValues, setFormValues] = useState<RegisterForm>(
-    {} as RegisterForm,
-  );
 
   const [validationErrors, setValidationErrors] = useState();
 
@@ -49,6 +55,12 @@ export default function FormRegister() {
     });
   }
 
+  function handleCloseModal() {
+    setFormValues({} as FarmFormTypes);
+
+    setModalOpened(false);
+  }
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     console.log(stateOptions);
@@ -63,7 +75,12 @@ export default function FormRegister() {
         .then(response => {
           return response.json();
         })
-        .then(data => setStateOptions(data));
+        .then((data: StateIBGEProps[]) => {
+          const ordenationStates = data.sort((a, b) => {
+            return a.nome.localeCompare(b.nome);
+          });
+          setStateOptions(ordenationStates);
+        });
       setLoadingStateOptions(false);
     } catch (error) {
       setLoadingStateOptions(false);
@@ -78,15 +95,17 @@ export default function FormRegister() {
           name="Nome"
           id="productor_name"
           label="Nome do produtor"
+          value={formValues.productor_name}
           onChange={e => {
             handleChangeDocument(e.target.value);
           }}
         />
-        <Input name="Nome" id="farm_name" label="Nome da produtor" />
+        <Input name="Nome" id="farm_name" label="Nome da fazenda" />
         <WrapperInput>
           <SelectInput
-            name="Nome"
+            name="state"
             id="state"
+            value={formValues.state}
             label="Estado"
             loading={loadingStateOptions}
             onChange={e => {
@@ -119,6 +138,7 @@ export default function FormRegister() {
           name="Endereço"
           id="agriculture_area"
           label="Area de agricultura"
+          value={formValues.total_area_agriculture}
           type="number"
           onChange={e => {
             handleChangeAgriculture(Number(e.target.value));
@@ -128,6 +148,7 @@ export default function FormRegister() {
           name="Endereço"
           id="vegetation_area"
           label="Area de vegetação"
+          value={formValues.total_area_vegetation}
           type="number"
           onChange={e => {
             handleChangeVegatation(Number(e.target.value));
@@ -137,6 +158,7 @@ export default function FormRegister() {
           name="Cidade"
           id="total_area"
           label="Área total"
+          value={formValues.total_area_farm}
           type="number"
           onChange={e => {
             handleChangeTotalArea(Number(e.target.value));
@@ -145,6 +167,7 @@ export default function FormRegister() {
         <Input
           name="Culturas"
           id="cultures"
+          value={formValues.cultures}
           label="Culturas plantadas"
           onChange={e => {
             handleChangeCultures(e.target.value);
@@ -152,7 +175,11 @@ export default function FormRegister() {
         />
 
         <ButtonContainer>
-          <Button type="submit">Enviar</Button>
+          <SubmitButton type="submit">Enviar</SubmitButton>
+
+          <CloseButton type="button" onClick={handleCloseModal}>
+            Fechar
+          </CloseButton>
         </ButtonContainer>
       </Fieldset>
     </form>
