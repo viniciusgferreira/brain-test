@@ -4,18 +4,19 @@ import { Container } from './styles';
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
+  error?: string;
 }
 
 export function InputBase(
-  { name, label, ...rest }: InputProps,
+  { name, label, error, ...rest }: InputProps,
   ref: Ref<HTMLInputElement>,
 ) {
   return (
-    <Container>
+    <Container error={!!error}>
       {!!label && <label htmlFor={name}>{label}</label>}
       <input name={name} id={name} ref={ref} {...rest} />
 
-      {/* {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>} */}
+      {!!error && <span>{error}</span>}
     </Container>
   );
 }

@@ -7,6 +7,7 @@ import { Input } from '../../../../components/Form/Input';
 import SelectInput from '../../../../components/Form/Select';
 import WrapperInput from '../../../../components/Form/WrapperInput';
 import { MySwal } from '../../../../utils/modalAlerts';
+import { validateDocument } from '../../../../utils/validatorDocument';
 import {
   ButtonContainer,
   CloseButton,
@@ -35,11 +36,19 @@ export default function FormRegister({
   const [currentCulture, setCurrentCulture] = useState('');
   const [currentStateOption, setcurrentStateOption] = useState('');
 
+  const [errorDocument, setErrorDocument] = useState(false);
+
   function handleChangeDocument(valueDocument: string) {
+    const validDocument = validateDocument(valueDocument);
     setFormValues({
       ...formValues,
-      document: valueDocument,
+      document: validDocument?.masked || valueDocument,
     });
+    if (!validDocument?.value) {
+      setErrorDocument(true);
+    } else {
+      setErrorDocument(false);
+    }
   }
   function handleChangeProductorName(valueProductorName: string) {
     setFormValues({ ...formValues, productor_name: valueProductorName });
@@ -121,6 +130,7 @@ export default function FormRegister({
           name="Documento"
           id="document"
           label="Documento"
+          error={errorDocument ? 'Digite um documento válido' : ''}
           value={formValues.document}
           onChange={e => {
             handleChangeDocument(e.target.value);
