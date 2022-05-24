@@ -15,41 +15,44 @@ export const ContentState = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 660px;
-  height: 700px;
-  padding-top: 40px;
 
-  /* padding: 40px; */
+  width: 660px;
+  height: 600px;
+  padding-top: 40px;
+  margin: 20px 0;
+
+  background: ${({ theme }) => theme.colors.secondary};
+
+  border-radius: 6px;
 `;
 export const ContentCultAg = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  max-width: 1200px;
 
   width: 100%;
   padding-top: 40px;
 
-  /* padding: 40px; */
+  @media (max-width: 829px) {
+    flex-direction: column;
+  }
 `;
-export const CultureWrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 
-  width: 400px;
-  height: 400px;
+  background: ${({ theme }) => theme.colors.secondary};
+  padding: 20px;
 
-  /* padding: 40px; */
-`;
-export const SoilWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  border-radius: 6px;
+
+  @media (max-width: 829px) {
+    margin-top: 10px;
+  }
 
   width: 400px;
   height: 400px;
-
-  /* padding: 40px; */
 `;

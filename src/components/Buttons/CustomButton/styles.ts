@@ -8,6 +8,7 @@ interface ColorButtonProps {
 
 export const Container = styled.button<ColorButtonProps>`
   max-width: 80px;
+  max-height: 30px;
   width: 100%;
   padding: 8px;
 

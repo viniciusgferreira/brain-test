@@ -1,31 +1,45 @@
-import React, { FormEvent, useEffect, useState } from 'react';
-import Button from '../../../../components/Form/Button';
+import { FormEvent, useEffect, useState } from 'react';
+import { MdAdd, MdDelete } from 'react-icons/md';
+import CustomButton from '../../../../components/Buttons/CustomButton';
 import DynamicSelectCityByUf from '../../../../components/Form/DynamicSelects/DynamicSelectUF';
 import Fieldset from '../../../../components/Form/Fieldset';
 import { Input } from '../../../../components/Form/Input';
 import SelectInput from '../../../../components/Form/Select';
 import WrapperInput from '../../../../components/Form/WrapperInput';
-import { ButtonContainer, CloseButton, SubmitButton } from './styles';
+import { MySwal } from '../../../../utils/modalAlerts';
+import {
+  ButtonContainer,
+  CloseButton,
+  ContentCultures,
+  SubmitButton,
+} from './styles';
 
 interface FormFarmProps {
   setModalOpened: (value: boolean) => void;
   formValues: FarmFormTypes;
   setFormValues: (values: FarmFormTypes) => void;
+  isEditing: boolean;
+  handleSubmit: (event: FormEvent) => void;
 }
 
 export default function FormRegister({
   setModalOpened,
   formValues,
   setFormValues,
+  isEditing,
+  handleSubmit,
 }: FormFarmProps) {
   const [stateOptions, setStateOptions] = useState<StateIBGEProps[]>([]);
   const [loadingStateOptions, setLoadingStateOptions] = useState(false);
   const [loadingCitiesOptions, setLoadingCityOptions] = useState(false);
-
-  const [validationErrors, setValidationErrors] = useState();
+  const [currentCulture, setCurrentCulture] = useState('');
+  const [currentStateOption, setcurrentStateOption] = useState('');
 
   function handleChangeDocument(valueDocument: string) {
-    setFormValues({ ...formValues, document: valueDocument });
+    setFormValues({
+      ...formValues,
+      document: valueDocument,
+    });
   }
   function handleChangeProductorName(valueProductorName: string) {
     setFormValues({ ...formValues, productor_name: valueProductorName });
@@ -40,18 +54,31 @@ export default function FormRegister({
     setFormValues({ ...formValues, city: valueCity });
   }
   function handleChangeAgriculture(valueAgriculture: number) {
-    setFormValues({ ...formValues, total_area_agriculture: valueAgriculture });
+    setFormValues({ ...formValues, area_agriculture: valueAgriculture });
   }
   function handleChangeVegatation(valueVegetation: number) {
-    setFormValues({ ...formValues, total_area_vegetation: valueVegetation });
+    setFormValues({ ...formValues, area_vegetation: valueVegetation });
   }
   function handleChangeTotalArea(totalArea: number) {
-    setFormValues({ ...formValues, total_area_farm: totalArea });
+    setFormValues({ ...formValues, total_area: totalArea });
   }
-  function handleChangeCultures(culture: string) {
+  function handleAddCultures(culture: string) {
+    const haveCultures = formValues.cultures;
     setFormValues({
       ...formValues,
-      cultures: [...formValues.cultures, culture],
+      cultures: haveCultures ? [...formValues.cultures, culture] : [culture],
+    });
+    setCurrentCulture('');
+  }
+
+  function handleDeleteCulture(cultureToDelete: string) {
+    const filteresCultures = [
+      ...formValues.cultures.filter(culture => culture !== cultureToDelete),
+    ];
+
+    setFormValues({
+      ...formValues,
+      cultures: [...filteresCultures],
     });
   }
 
@@ -59,11 +86,6 @@ export default function FormRegister({
     setFormValues({} as FarmFormTypes);
 
     setModalOpened(false);
-  }
-
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    console.log(stateOptions);
   }
 
   useEffect(() => {
@@ -84,32 +106,53 @@ export default function FormRegister({
       setLoadingStateOptions(false);
     } catch (error) {
       setLoadingStateOptions(false);
-      console.log(error);
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Ocorreu um erro ao buscar os estados.',
+      });
     }
   }, []);
 
   return (
-    <form onSubmit={e => handleSubmit(e)}>
+    <form onSubmit={handleSubmit}>
       <Fieldset legend="Cadastrar nova fazenda">
+        <Input
+          name="Documento"
+          id="document"
+          label="Documento"
+          value={formValues.document}
+          onChange={e => {
+            handleChangeDocument(e.target.value);
+          }}
+        />
         <Input
           name="Nome"
           id="productor_name"
           label="Nome do produtor"
           value={formValues.productor_name}
           onChange={e => {
-            handleChangeDocument(e.target.value);
+            handleChangeProductorName(e.target.value);
           }}
         />
-        <Input name="Nome" id="farm_name" label="Nome da fazenda" />
+        <Input
+          name="Nome"
+          id="farm_name"
+          value={formValues.farm_name}
+          label="Nome da fazenda"
+          onChange={e => {
+            handleChangeFarmName(e.target.value);
+          }}
+        />
         <WrapperInput>
           <SelectInput
             name="state"
             id="state"
-            value={formValues.state}
             label="Estado"
             loading={loadingStateOptions}
             onChange={e => {
-              handleChangeState(e.target.value);
+              setcurrentStateOption(e.target.value);
+              handleChangeState(e.target.options[e.target.selectedIndex].text);
             }}
           >
             {loadingStateOptions ? (
@@ -126,7 +169,7 @@ export default function FormRegister({
             )}
           </SelectInput>
           <DynamicSelectCityByUf
-            Uf={formValues.state}
+            Uf={currentStateOption}
             onChange={handleChangeCity}
             selectedValue={formValues.city}
             name="city"
@@ -138,7 +181,7 @@ export default function FormRegister({
           name="Endereço"
           id="agriculture_area"
           label="Area de agricultura"
-          value={formValues.total_area_agriculture}
+          value={formValues.area_agriculture}
           type="number"
           onChange={e => {
             handleChangeAgriculture(Number(e.target.value));
@@ -148,7 +191,7 @@ export default function FormRegister({
           name="Endereço"
           id="vegetation_area"
           label="Area de vegetação"
-          value={formValues.total_area_vegetation}
+          value={formValues.area_vegetation}
           type="number"
           onChange={e => {
             handleChangeVegatation(Number(e.target.value));
@@ -158,24 +201,52 @@ export default function FormRegister({
           name="Cidade"
           id="total_area"
           label="Área total"
-          value={formValues.total_area_farm}
+          value={formValues.total_area}
           type="number"
           onChange={e => {
             handleChangeTotalArea(Number(e.target.value));
           }}
         />
-        <Input
-          name="Culturas"
-          id="cultures"
-          value={formValues.cultures}
-          label="Culturas plantadas"
-          onChange={e => {
-            handleChangeCultures(e.target.value);
-          }}
-        />
+
+        <ContentCultures>
+          <div>
+            <Input
+              name="Culturas"
+              id="cultures"
+              value={currentCulture}
+              label="Culturas plantadas"
+              onChange={e => {
+                setCurrentCulture(e.target.value);
+              }}
+            />
+            <CustomButton
+              color="new"
+              onClick={() => handleAddCultures(currentCulture)}
+            >
+              <MdAdd size={14} style={{ marginRight: '4px' }} />
+              Adicionar
+            </CustomButton>
+          </div>
+
+          <ul>
+            {formValues.cultures?.map(culture => (
+              <li>
+                <p>{culture}</p>
+                <CustomButton
+                  color="danger"
+                  onClick={() => handleDeleteCulture(culture)}
+                >
+                  <MdDelete size={14} style={{ marginRight: '4px' }} />
+                </CustomButton>
+              </li>
+            ))}
+          </ul>
+        </ContentCultures>
 
         <ButtonContainer>
-          <SubmitButton type="submit">Enviar</SubmitButton>
+          <SubmitButton type="submit">
+            {isEditing ? 'Salvar' : 'Concluir'}
+          </SubmitButton>
 
           <CloseButton type="button" onClick={handleCloseModal}>
             Fechar

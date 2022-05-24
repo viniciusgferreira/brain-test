@@ -2,6 +2,7 @@ import { ResponsivePieCanvas } from '@nivo/pie';
 import { useEffect, useState } from 'react';
 
 import api from '../../../../services/api';
+import { MySwal } from '../../../../utils/modalAlerts';
 
 export default function PieCulture() {
   const [dataPieCulture, setDataPieCulture] = useState([]);
@@ -10,11 +11,14 @@ export default function PieCulture() {
     async function loadPieCulture() {
       try {
         const response = await api.get('graph-culture');
-        console.log(response.data);
 
         setDataPieCulture(response.data);
       } catch (error) {
-        console.log(error);
+        MySwal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Ocorreu um erro buscar dados de gráficos por estado.',
+        });
       }
     }
     loadPieCulture();
@@ -24,7 +28,7 @@ export default function PieCulture() {
       // {...commonProperties}
       data={dataPieCulture}
       innerRadius={0.5}
-      margin={{ top: 40, right: 80, bottom: 30, left: 80 }}
+      margin={{ top: 0, right: 100, bottom: 30, left: 100 }}
       padAngle={0.2}
       cornerRadius={2}
       activeOuterRadiusOffset={8}

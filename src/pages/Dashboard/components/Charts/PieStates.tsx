@@ -2,6 +2,7 @@ import { ResponsivePieCanvas } from '@nivo/pie';
 import { useEffect, useState } from 'react';
 
 import api from '../../../../services/api';
+import { MySwal } from '../../../../utils/modalAlerts';
 
 export default function PieStates() {
   const [dataPieStates, setDataPieStates] = useState([]);
@@ -10,11 +11,13 @@ export default function PieStates() {
     async function loadPieStates() {
       try {
         const response = await api.get('graph-state');
-        console.log(response.data);
-
         setDataPieStates(response.data);
       } catch (error) {
-        console.log(error);
+        MySwal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Ocorreu um erro buscar dados de gráficos por estado.',
+        });
       }
     }
     loadPieStates();
@@ -24,7 +27,7 @@ export default function PieStates() {
       // {...commonProperties}
       data={dataPieStates}
       innerRadius={0.5}
-      margin={{ top: 0, right: 200, bottom: 30, left: 170 }}
+      margin={{ top: -200, right: 180, bottom: -100, left: 180 }}
       padAngle={0.2}
       cornerRadius={2}
       activeOuterRadiusOffset={8}

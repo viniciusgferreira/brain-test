@@ -7,7 +7,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: keyof ColorsProps;
 }
 
-export default function Button({ children, color, ...rest }: ButtonProps) {
+export default function CustomButton({
+  children,
+  color,
+  ...rest
+}: ButtonProps) {
   return (
     <Container type="button" {...rest} color={color}>
       {children}

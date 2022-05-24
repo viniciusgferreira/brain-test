@@ -16,8 +16,8 @@ type FarmFormTypes = {
   farm_name: string;
   state: string;
   city: string;
-  total_area_farm: number;
-  total_area_agriculture: number;
-  total_area_vegetation: number;
+  total_area: number;
+  area_agriculture: number;
+  area_vegetation: number;
   cultures: string[];
 };
