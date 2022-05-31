@@ -81,6 +81,7 @@ export default function Farms() {
   }
 
   function handleNewFarm() {
+    setIsEditing(false);
     setFormValues({} as FarmFormTypes);
     setModalOpened(true);
   }
